@@ -82,6 +82,7 @@ def clean_category_name(cat):
     return cat
 
 def calculate_metrics(df):
+    df = df.fillna(0)
     df['Balance'] = df['Target'] - df['Achievement']
     df['Ach %'] = df.apply(lambda row: (row['Achievement'] / row['Target']) * 100 if row['Target'] > 0 else 0, axis=1)
     df['Growth over Last Year %'] = df.apply(lambda row: ((row['Achievement'] - row['Sales_2025']) / row['Sales_2025']) * 100 if row['Sales_2025'] > 0 else 0, axis=1)
@@ -119,6 +120,7 @@ def highlight_badass_style(df):
 
 
 def generate_excel_export(db):
+    import math
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         workbook = writer.book
@@ -132,6 +134,13 @@ def generate_excel_export(db):
         total_val_format = workbook.add_format({'bold': True, 'border': 1, 'bg_color': '#D9E1F2', 'num_format': '#,##0.00'})
         total_pct_format = workbook.add_format({'bold': True, 'border': 1, 'bg_color': '#D9E1F2', 'num_format': '0.00%'})
         
+        def safe_num(v):
+            try:
+                fv = float(v)
+                return 0 if math.isnan(fv) or math.isinf(fv) else fv
+            except:
+                return 0
+
         def write_table_to_sheet(sheet, df_table, start_row, title_dict):
             current_row = start_row
             for k, v in title_dict.items():
@@ -149,18 +158,18 @@ def generate_excel_export(db):
                 c_val = total_val_format if is_total else val_format
                 c_pct = total_pct_format if is_total else pct_format
                 sheet.write(current_row, 0, row['Category'], c_txt)
-                sheet.write_number(current_row, 1, row['Target'], c_num)
-                sheet.write_number(current_row, 2, row['Achievement'], c_num)
-                sheet.write_number(current_row, 3, row['Balance'], c_num)
+                sheet.write_number(current_row, 1, safe_num(row['Target']), c_num)
+                sheet.write_number(current_row, 2, safe_num(row['Achievement']), c_num)
+                sheet.write_number(current_row, 3, safe_num(row['Balance']), c_num)
                 try: ach_val = float(str(row['Ach %']).strip('%'))/100
                 except: ach_val = 0
                 try: growth_val = float(str(row['Growth over Last Year %']).strip('%'))/100
                 except: growth_val = 0
                 
-                sheet.write_number(current_row, 4, ach_val, c_pct)
-                sheet.write_number(current_row, 5, row['Sales_2025'], c_num)
-                sheet.write_number(current_row, 6, growth_val, c_pct)
-                sheet.write_number(current_row, 7, row['Value'], c_val)
+                sheet.write_number(current_row, 4, safe_num(ach_val), c_pct)
+                sheet.write_number(current_row, 5, safe_num(row['Sales_2025']), c_num)
+                sheet.write_number(current_row, 6, safe_num(growth_val), c_pct)
+                sheet.write_number(current_row, 7, safe_num(row['Value']), c_val)
                 current_row += 1
             sheet.set_column('A:A', 35)
             sheet.set_column('B:H', 15)
