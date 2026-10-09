@@ -173,7 +173,7 @@ def generate_excel_export(db):
         if not db.empty:
             bdm_name = db['BDM'].iloc[0]
             worksheet_bdm = writer.book.add_worksheet('BDM')
-            summary_bdm = db.groupby(['Category', 'Flavours'], dropna=False, as_index=False).sum(numeric_only=True)
+            summary_bdm = db.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
             summary_bdm = enforce_master_sequence(summary_bdm)
             summary_bdm = calculate_metrics(summary_bdm)
             total_bdm = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Flavours': '', 'Target': summary_bdm['Target'].sum(), 'Achievement': summary_bdm['Achievement'].sum(), 'Sales_2025': summary_bdm['Sales_2025'].sum(), 'Value': summary_bdm['Value'].sum()}])
@@ -183,7 +183,7 @@ def generate_excel_export(db):
             rsms = db['RSM'].unique()
             for r in rsms:
                 rsm_data = db[db['RSM'] == r]
-                rsm_grouped = rsm_data.groupby(['Category', 'Flavours'], dropna=False, as_index=False).sum(numeric_only=True)
+                rsm_grouped = rsm_data.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
                 rsm_display = enforce_master_sequence(rsm_grouped)
                 rsm_display = calculate_metrics(rsm_display)
                 rsm_total = pd.DataFrame([{'Category': 'TOTAL', 'Flavours': '', 'Target': rsm_display['Target'].sum(), 'Achievement': rsm_display['Achievement'].sum(), 'Sales_2025': rsm_display['Sales_2025'].sum(), 'Value': rsm_display['Value'].sum()}])
@@ -194,7 +194,7 @@ def generate_excel_export(db):
                 rsm_sheet_name = str(r)[:31]
                 worksheet_rsm = writer.book.add_worksheet(rsm_sheet_name)
                 rsm_data = db[db['RSM'] == r]
-                rsm_grouped = rsm_data.groupby(['Category', 'Flavours'], dropna=False, as_index=False).sum(numeric_only=True)
+                rsm_grouped = rsm_data.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
                 rsm_display = enforce_master_sequence(rsm_grouped)
                 rsm_display = calculate_metrics(rsm_display)
                 rsm_total_row = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Flavours': '', 'Target': rsm_display['Target'].sum(), 'Achievement': rsm_display['Achievement'].sum(), 'Sales_2025': rsm_display['Sales_2025'].sum(), 'Value': rsm_display['Value'].sum()}])
@@ -204,7 +204,7 @@ def generate_excel_export(db):
                 tsos = rsm_data['TSO'].unique()
                 for t in tsos:
                     tso_data = rsm_data[rsm_data['TSO'] == t]
-                    tso_grouped = tso_data.groupby(['Category', 'Flavours'], dropna=False, as_index=False).sum(numeric_only=True)
+                    tso_grouped = tso_data.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
                     tso_display = enforce_master_sequence(tso_grouped)
                     tso_display = calculate_metrics(tso_display)
                     tso_total_row = pd.DataFrame([{'Category': 'TOTAL', 'Flavours': '', 'Target': tso_display['Target'].sum(), 'Achievement': tso_display['Achievement'].sum(), 'Sales_2025': tso_display['Sales_2025'].sum(), 'Value': tso_display['Value'].sum()}])
@@ -336,7 +336,7 @@ if menu == "📝 Add Raw Data":
                         'Value': pd.to_numeric(df_paste[col_val].astype(str).str.replace(',', '').str.replace('%', ''), errors='coerce').fillna(0) if col_val else 0,
                     })
                     df_clean = df_clean[(df_clean['Category'] != '') & (df_clean['Category'].notna())]
-                    df_grouped = df_clean.groupby(['BDM', 'RSM', 'RSM_Original', 'TSO', 'Category', 'Flavours'], dropna=False, as_index=False).sum()
+                    df_grouped = df_clean.groupby(['BDM', 'RSM', 'RSM_Original', 'TSO', 'Category'], dropna=False, as_index=False).sum(numeric_only=True)
                     
                     if not db.empty and 'RSM_Original' not in db.columns:
                         db['RSM_Original'] = "Unknown"
@@ -373,7 +373,7 @@ elif menu == "📋 RSM Summary":
         </div>
         """, unsafe_allow_html=True)
         
-        summary = rsm_data.groupby(['Category', 'Flavours'], dropna=False, as_index=False).sum(numeric_only=True)
+        summary = rsm_data.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
         summary = enforce_master_sequence(summary)
         summary = calculate_metrics(summary)
         
@@ -425,7 +425,7 @@ elif menu == "📋 RSM Summary":
             </div>
             """, unsafe_allow_html=True)
             
-            tso_grouped = tso_data.groupby(['Category', 'Flavours'], dropna=False, as_index=False).sum(numeric_only=True)
+            tso_grouped = tso_data.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
             tso_display = enforce_master_sequence(tso_grouped)
             tso_display = calculate_metrics(tso_display)
             
@@ -458,7 +458,7 @@ elif menu == "📈 BDM Summary":
         </div>
         """, unsafe_allow_html=True)
         
-        summary = db.groupby(['Category', 'Flavours'], dropna=False, as_index=False).sum(numeric_only=True)
+        summary = db.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
         summary = enforce_master_sequence(summary)
         summary = calculate_metrics(summary)
         
@@ -499,7 +499,7 @@ elif menu == "📈 BDM Summary":
             </div>
             """, unsafe_allow_html=True)
             
-            rsm_grouped = rsm_data.groupby(['Category', 'Flavours'], dropna=False, as_index=False).sum(numeric_only=True)
+            rsm_grouped = rsm_data.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
             rsm_display = enforce_master_sequence(rsm_grouped)
             rsm_display = calculate_metrics(rsm_display)
             
