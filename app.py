@@ -86,15 +86,13 @@ def calculate_metrics(df):
     df['Ach %'] = df.apply(lambda row: (row['Achievement'] / row['Target']) * 100 if row['Target'] > 0 else 0, axis=1)
     df['Growth over Last Year %'] = df.apply(lambda row: ((row['Achievement'] - row['Sales_2025']) / row['Sales_2025']) * 100 if row['Sales_2025'] > 0 else 0, axis=1)
     
-    cols = ['Category', 'Flavours', 'Target', 'Achievement', 'Balance', 'Ach %', 'Sales_2025', 'Growth over Last Year %', 'Value']
+    cols = ['Category', 'Target', 'Achievement', 'Balance', 'Ach %', 'Sales_2025', 'Growth over Last Year %', 'Value']
     return df[[c for c in cols if c in df.columns]]
 
 def enforce_master_sequence(df_grouped):
     df_filtered = df_grouped[df_grouped['Category'].isin(MASTER_SEQUENCE)].copy()
     df_filtered['Category_Cat'] = pd.Categorical(df_filtered['Category'], categories=MASTER_SEQUENCE, ordered=True)
     df_sorted = df_filtered.sort_values('Category_Cat').drop(columns=['Category_Cat']).reset_index(drop=True)
-    if 'Flavours' in df_sorted.columns:
-        df_sorted['Flavours'] = df_sorted['Flavours'].fillna("").replace("None", "")
     return df_sorted
 
 def highlight_badass_style(df):
@@ -140,7 +138,7 @@ def generate_excel_export(db):
                 sheet.write(current_row, 0, k, workbook.add_format({'bold': True, 'font_color': '#E20613'}))
                 sheet.write(current_row, 1, str(v), workbook.add_format({'bold': True}))
                 current_row += 1
-            cols = ['Category', 'Flavours', 'Target', 'Achievement', 'Balance', 'Ach %', 'Sales 2025', 'Growth over Last Year %', 'Value']
+            cols = ['Category', 'Target', 'Achievement', 'Balance', 'Ach %', 'Sales 2025', 'Growth over Last Year %', 'Value']
             for col_num, value in enumerate(cols):
                 sheet.write(current_row, col_num, value, header_format)
             current_row += 1
@@ -151,23 +149,21 @@ def generate_excel_export(db):
                 c_val = total_val_format if is_total else val_format
                 c_pct = total_pct_format if is_total else pct_format
                 sheet.write(current_row, 0, row['Category'], c_txt)
-                sheet.write(current_row, 1, row.get('Flavours', ''), c_txt)
-                sheet.write_number(current_row, 2, row['Target'], c_num)
-                sheet.write_number(current_row, 3, row['Achievement'], c_num)
-                sheet.write_number(current_row, 4, row['Balance'], c_num)
+                sheet.write_number(current_row, 1, row['Target'], c_num)
+                sheet.write_number(current_row, 2, row['Achievement'], c_num)
+                sheet.write_number(current_row, 3, row['Balance'], c_num)
                 try: ach_val = float(str(row['Ach %']).strip('%'))/100
                 except: ach_val = 0
                 try: growth_val = float(str(row['Growth over Last Year %']).strip('%'))/100
                 except: growth_val = 0
                 
-                sheet.write_number(current_row, 5, ach_val, c_pct)
-                sheet.write_number(current_row, 6, row['Sales_2025'], c_num)
-                sheet.write_number(current_row, 7, growth_val, c_pct)
-                sheet.write_number(current_row, 8, row['Value'], c_val)
+                sheet.write_number(current_row, 4, ach_val, c_pct)
+                sheet.write_number(current_row, 5, row['Sales_2025'], c_num)
+                sheet.write_number(current_row, 6, growth_val, c_pct)
+                sheet.write_number(current_row, 7, row['Value'], c_val)
                 current_row += 1
             sheet.set_column('A:A', 35)
-            sheet.set_column('B:B', 15)
-            sheet.set_column('C:I', 15)
+            sheet.set_column('B:H', 15)
             return current_row + 2
 
         if not db.empty:
