@@ -176,7 +176,7 @@ def generate_excel_export(db):
             summary_bdm = db.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
             summary_bdm = enforce_master_sequence(summary_bdm)
             summary_bdm = calculate_metrics(summary_bdm)
-            total_bdm = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Flavours': '', 'Target': summary_bdm['Target'].sum(), 'Achievement': summary_bdm['Achievement'].sum(), 'Sales_2025': summary_bdm['Sales_2025'].sum(), 'Value': summary_bdm['Value'].sum()}])
+            total_bdm = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Target': summary_bdm['Target'].sum(), 'Achievement': summary_bdm['Achievement'].sum(), 'Sales_2025': summary_bdm['Sales_2025'].sum(), 'Value': summary_bdm['Value'].sum()}])
             total_bdm = calculate_metrics(total_bdm)
             summary_bdm = pd.concat([summary_bdm, total_bdm], ignore_index=True)
             next_row = write_table_to_sheet(worksheet_bdm, summary_bdm, 0, {'BDM:': bdm_name, 'RSM/ASM:': 'ALL RSMs'})
@@ -186,7 +186,7 @@ def generate_excel_export(db):
                 rsm_grouped = rsm_data.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
                 rsm_display = enforce_master_sequence(rsm_grouped)
                 rsm_display = calculate_metrics(rsm_display)
-                rsm_total = pd.DataFrame([{'Category': 'TOTAL', 'Flavours': '', 'Target': rsm_display['Target'].sum(), 'Achievement': rsm_display['Achievement'].sum(), 'Sales_2025': rsm_display['Sales_2025'].sum(), 'Value': rsm_display['Value'].sum()}])
+                rsm_total = pd.DataFrame([{'Category': 'TOTAL', 'Target': rsm_display['Target'].sum(), 'Achievement': rsm_display['Achievement'].sum(), 'Sales_2025': rsm_display['Sales_2025'].sum(), 'Value': rsm_display['Value'].sum()}])
                 rsm_total = calculate_metrics(rsm_total)
                 next_row = write_table_to_sheet(worksheet_bdm, rsm_total, next_row, {'RSM/ASM:': r})
             
@@ -197,7 +197,7 @@ def generate_excel_export(db):
                 rsm_grouped = rsm_data.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
                 rsm_display = enforce_master_sequence(rsm_grouped)
                 rsm_display = calculate_metrics(rsm_display)
-                rsm_total_row = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Flavours': '', 'Target': rsm_display['Target'].sum(), 'Achievement': rsm_display['Achievement'].sum(), 'Sales_2025': rsm_display['Sales_2025'].sum(), 'Value': rsm_display['Value'].sum()}])
+                rsm_total_row = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Target': rsm_display['Target'].sum(), 'Achievement': rsm_display['Achievement'].sum(), 'Sales_2025': rsm_display['Sales_2025'].sum(), 'Value': rsm_display['Value'].sum()}])
                 rsm_total_row = calculate_metrics(rsm_total_row)
                 rsm_display = pd.concat([rsm_display, rsm_total_row], ignore_index=True)
                 n_row = write_table_to_sheet(worksheet_rsm, rsm_display, 0, {'BDM:': bdm_name, 'RSM/ASM:': r})
@@ -207,7 +207,7 @@ def generate_excel_export(db):
                     tso_grouped = tso_data.groupby(['Category'], dropna=False, as_index=False).sum(numeric_only=True)
                     tso_display = enforce_master_sequence(tso_grouped)
                     tso_display = calculate_metrics(tso_display)
-                    tso_total_row = pd.DataFrame([{'Category': 'TOTAL', 'Flavours': '', 'Target': tso_display['Target'].sum(), 'Achievement': tso_display['Achievement'].sum(), 'Sales_2025': tso_display['Sales_2025'].sum(), 'Value': tso_display['Value'].sum()}])
+                    tso_total_row = pd.DataFrame([{'Category': 'TOTAL', 'Target': tso_display['Target'].sum(), 'Achievement': tso_display['Achievement'].sum(), 'Sales_2025': tso_display['Sales_2025'].sum(), 'Value': tso_display['Value'].sum()}])
                     tso_total_row = calculate_metrics(tso_total_row)
                     tso_display = pd.concat([tso_display, tso_total_row], ignore_index=True)
                     n_row = write_table_to_sheet(worksheet_rsm, tso_display, n_row, {'BDM:': bdm_name, 'RSM/ASM:': r, 'TSO:': t})
@@ -396,7 +396,7 @@ elif menu == "📋 RSM Summary":
         st.markdown("<br>", unsafe_allow_html=True)
         # ----------------------------------------
         
-        total_row = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Flavours': '', 'Target': t_target, 'Achievement': t_ach, 'Sales_2025': t_2025, 'Value': t_val}])
+        total_row = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Target': t_target, 'Achievement': t_ach, 'Sales_2025': t_2025, 'Value': t_val}])
         total_row = calculate_metrics(total_row)
         summary_disp = pd.concat([summary, total_row], ignore_index=True)
         
@@ -429,7 +429,7 @@ elif menu == "📋 RSM Summary":
             tso_display = enforce_master_sequence(tso_grouped)
             tso_display = calculate_metrics(tso_display)
             
-            tso_total = pd.DataFrame([{'Category': 'TOTAL', 'Flavours': '', 'Target': tso_display['Target'].sum(), 'Achievement': tso_display['Achievement'].sum(), 'Sales_2025': tso_display['Sales_2025'].sum(), 'Value': tso_display['Value'].sum()}])
+            tso_total = pd.DataFrame([{'Category': 'TOTAL', 'Target': tso_display['Target'].sum(), 'Achievement': tso_display['Achievement'].sum(), 'Sales_2025': tso_display['Sales_2025'].sum(), 'Value': tso_display['Value'].sum()}])
             tso_total = calculate_metrics(tso_total)
             tso_display = pd.concat([tso_display, tso_total], ignore_index=True)
             
@@ -481,7 +481,7 @@ elif menu == "📈 BDM Summary":
         st.markdown("<br>", unsafe_allow_html=True)
         # ----------------------------------------
         
-        total_row = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Flavours': '', 'Target': t_target, 'Achievement': t_ach, 'Sales_2025': t_2025, 'Value': t_val}])
+        total_row = pd.DataFrame([{'Category': 'GRAND TOTAL', 'Target': t_target, 'Achievement': t_ach, 'Sales_2025': t_2025, 'Value': t_val}])
         total_row = calculate_metrics(total_row)
         summary_disp = pd.concat([summary, total_row], ignore_index=True)
         
@@ -503,7 +503,7 @@ elif menu == "📈 BDM Summary":
             rsm_display = enforce_master_sequence(rsm_grouped)
             rsm_display = calculate_metrics(rsm_display)
             
-            rsm_total = pd.DataFrame([{'Category': 'TOTAL', 'Flavours': '', 'Target': rsm_display['Target'].sum(), 'Achievement': rsm_display['Achievement'].sum(), 'Sales_2025': rsm_display['Sales_2025'].sum(), 'Value': rsm_display['Value'].sum()}])
+            rsm_total = pd.DataFrame([{'Category': 'TOTAL', 'Target': rsm_display['Target'].sum(), 'Achievement': rsm_display['Achievement'].sum(), 'Sales_2025': rsm_display['Sales_2025'].sum(), 'Value': rsm_display['Value'].sum()}])
             rsm_total = calculate_metrics(rsm_total)
             
             st.dataframe(highlight_badass_style(rsm_total), use_container_width=True, hide_index=True)
